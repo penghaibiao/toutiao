@@ -1,11 +1,43 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-// import Home from '../views/Home.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
+  {
+    path: "/",
+    name: "layout",
+    component: () => import("@/views/layout/"),
+    children: [{
+      path: '',
+      name: 'home',
+      component: () => import("@/views/layout/zi_layout/home.vue")
 
+    },
+    {
+      path: '/qa',
+      name: 'qa',
+      component: () => import("@/views/layout/zi_layout/qa.vue")
+
+    },
+    {
+      path: '/video',
+      name: 'video',
+      component: () => import("@/views/layout/zi_layout/video.vue")
+
+    },
+    {
+      path: '/mine',
+      name: 'mine',
+      component: () => import("@/views/layout/zi_layout/mine.vue")
+
+    }]
+  },
+  {
+    path: "/login",
+    name: "login",
+    component: () => import("@/views/login/")
+  }
 ]
 
 const router = new VueRouter({

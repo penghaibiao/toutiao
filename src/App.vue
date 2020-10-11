@@ -1,9 +1,14 @@
 <template>
   <div id="app">
-    <h1>今日头条</h1>
     <router-view></router-view>
   </div>
 </template>
+<script>
+// import layout from "./views/layout";
+export default {
+  components: {},
+};
+</script>
 
 <style lang="less">
 </style>
