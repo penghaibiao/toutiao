@@ -8,3 +8,12 @@ export function Login(aa) {
 
 
 }
+//登录验证码
+export function Login_Code(mobile) {
+    return request({
+        method: "get",
+        url: '/mp/v1_0/sms/codes?' + mobile,
+    })
+
+
+}
