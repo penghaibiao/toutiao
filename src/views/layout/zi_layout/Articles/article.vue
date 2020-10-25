@@ -29,7 +29,9 @@
           :icon="Article_Data.is_followed ? '' : 'plus'"
           round
           size="small"
+          :loading="infollowloading"
           class="Attention"
+          @click="onfollow"
           >{{ Article_Data.is_followed ? "已关注" : "关注" }}
         </van-button>
       </van-cell>
@@ -39,17 +41,46 @@
         v-html="Article_Data.content"
       ></div>
     </div>
+    <!-- 底部结构 -->
+    <div class="Article_Bottom">
+      <van-button class="Commentary" type="default" round size="small"
+        >写评论</van-button
+      >
+      <van-icon name="comment-o" info="123" size="20px" color="#777"></van-icon>
+      <van-icon
+        :name="Article_Data.is_collected ? 'star' : 'star-o'"
+        :color="Article_Data.is_collected ? '#FF6347' : '#777'"
+        @click="Collect"
+        size="20px"
+      ></van-icon>
+      <van-icon
+        name="good-job-o"
+        :color="Article_Data.attitude >= 1 ? '#FF6347' : '#777'"
+        size="20px"
+        @click="Like"
+      ></van-icon>
+      <van-icon name="share" color="#777777" size="20px"></van-icon>
+    </div>
   </div>
 </template>
 
 <script>
-import { Article_details } from "@/network/Articles.js";
+import {
+  Article_details,
+  addFollow,
+  deleteFollow,
+  addCollect,
+  deleteCollect,
+  addLike,
+  deleteLike,
+} from "@/network/Articles.js";
 import { ImagePreview } from "vant";
 export default {
   data() {
     return {
       article_id: this.$route.params.articleId,
       Article_Data: {}, //文章数据对象
+      infollowloading: false,
     };
   },
   created() {
@@ -64,7 +95,6 @@ export default {
       this.$nextTick(() => {
         let Article_Data_content = this.$refs["Article_Data.content"];
         let imgs = Article_Data_content.querySelectorAll("img");
-        console.log(imgs);
         let imgpath = [];
         imgs.forEach((img, index) => {
           imgpath.push(img.src);
@@ -77,11 +107,81 @@ export default {
         });
       });
     },
+    async onfollow() {
+      this.infollowloading = true;
+      if (this.Article_Data.is_followed) {
+        //已关注，取消关注
+        const res = await deleteFollow(this.Article_Data.aut_id);
+        this.Article_Data.is_followed = false;
+        console.log(res);
+      } else {
+        //未关注，关注
+        const res = await addFollow(this.Article_Data.aut_id);
+        this.Article_Data.is_followed = true;
+      }
+      this.infollowloading = false;
+    },
+    async Collect() {
+      // 这里 loading 不仅仅是为了交互提示，更重要的是请求期间禁用背景点击功能，防止用户不断的操作界面发出请求
+      this.$toast.loading({
+        duration: 0, // 持续展示 toast
+        message: "操作中...",
+        forbidClick: true, // 是否禁止背景点击
+      });
+
+      try {
+        // 如果已收藏，则取消收藏
+        if (this.Article_Data.is_collected) {
+          await deleteCollect(this.article_id);
+          // this.Article_Data.is_collected = false;
+          this.$toast.success("取消收藏");
+        } else {
+          // 添加收藏
+          await addCollect(this.article_id);
+          // this.Article_Data.is_collected = true;
+          this.$toast.success("收藏成功");
+        }
+        this.Article_Data.is_collected = !this.Article_Data.is_collected;
+      } catch (err) {
+        console.log(err);
+        this.$toast.fail("操作失败");
+      }
+    },
+    async Like() {
+      this.$toast.loading({
+        duration: 0, // 持续展示 toast
+        message: "操作中...",
+        forbidClick: true, // 是否禁止背景点击
+      });
+
+      try {
+        // 如果已经点赞，则取消点赞
+        if (this.Article_Data.attitude === 1) {
+          await deleteLike(this.article_id);
+          this.Article_Data.attitude = -1;
+          this.$toast.success("取消点赞");
+        } else {
+          // 否则添加点赞
+          await addLike(this.article_id);
+          this.Article_Data.attitude = 1;
+          this.$toast.success("点赞成功");
+        }
+      } catch (err) {
+        console.log(err);
+        this.$toast.fail("操作失败");
+      }
+    },
   },
 };
 </script>
 
 <style scoped lang="less">
+.Article_Bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
 .app-nav-bar {
   position: fixed;
   top: 0;
@@ -103,6 +203,7 @@ export default {
 }
 .Articles_content {
   margin-top: 37px;
+  margin-bottom: 37px;
 }
 .user-info {
   //   box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
@@ -122,6 +223,20 @@ export default {
   .Attention {
     width: 85px;
     height: 29px;
+  }
+}
+.Article_Bottom {
+  display: flex;
+  background-color: #fff;
+  justify-content: center;
+  align-items: center;
+  height: 44px;
+  .Commentary {
+    flex: 50%;
+  }
+  .van-icon {
+    flex: 10%;
+    text-align: center;
   }
 }
 </style>
