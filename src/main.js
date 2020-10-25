@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
+import utils from './utils/dayjs'
 import store from './store'
 
 //自动设置rem基准值（html字体大小）

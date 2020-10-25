@@ -37,7 +37,18 @@ const routes = [
     path: "/login",
     name: "login",
     component: () => import("@/views/login/")
+  },
+  {
+    path: '/search',
+    name: '/search',
+    component: () => import("@/views/layout/zi_layout/zihome/search")
+  },
+  {
+    path: '/article/:articleId',
+    name: '/article',
+    component: () => import("@/views/layout/zi_layout/Articles/article.vue")
   }
+
 ]
 
 const router = new VueRouter({

@@ -1,4 +1,5 @@
 import axios from 'axios'
+import store from '@/store'
 
 export function request(config) {
     const instance = axios.create({
@@ -6,8 +7,10 @@ export function request(config) {
         timeout: 5000
     })
     instance.interceptors.request.use(config => {
-        config.headers.Authorization = window.sessionStorage.getItem('token')
-
+        const { user } = store.state
+        if (user) {
+            config.headers.Authorization = `Bearer ${user.token}`
+        }
         return config
     }, err => {
         // console.log(err)

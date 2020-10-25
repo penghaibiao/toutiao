@@ -38,7 +38,7 @@
       >
         <template #button>
           <van-button
-            round
+            :round="false"
             size="small"
             type="primary"
             @click.prevent="onVerification"
@@ -91,6 +91,7 @@ export default {
       jiazai: false,
     };
   },
+  created() {},
   methods: {
     async click_loginBtn() {
       //登录提示——加载中
@@ -103,14 +104,13 @@ export default {
       try {
         const res = await Login(this.user);
         this.$store.commit("setUser", res.data);
-        console.log(res);
-        if (res == true) {
-          Toast.success("登录成功");
-        } else {
-          Toast.fail("请输入正确的手机号和验证码！");
-        }
+
+        Toast.success("登录成功");
+
+        this.$router.push("/mine");
       } catch (error) {
         console.log("登录失败", error);
+        Toast.fail("请输入正确的手机号和验证码！");
       }
     },
     onFaild(err) {

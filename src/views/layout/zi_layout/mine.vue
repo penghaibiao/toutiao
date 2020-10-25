@@ -10,42 +10,43 @@
       >
         <van-image
           slot="icon"
-          round="cover"
+          round
           width="50"
           height="50"
           class="Head_shot"
-          src="https://img.yzcdn.cn/vant/cat.jpeg"
+          :src="mine_Information.photo"
         />
-        <div class="Nicknames" slot="title">昵称</div>
+        <div class="Nicknames" slot="title">{{ mine_Information.name }}</div>
         <van-button round class="Information">编辑资料</van-button>
       </van-cell>
       <van-grid class="mine-grid mb-4" :border="false" :center="true">
         <van-grid-item text="文字" class="data-info-item">
           <div slot="text">
-            <div class="span">11</div>
+            <div class="span">{{ mine_Information.art_count }}</div>
             <div class="text">头条</div>
           </div>
         </van-grid-item>
         <van-grid-item text="文字" class="data-info-item">
           <div slot="text">
-            <div class="span">1</div>
+            <div class="span">{{ mine_Information.follow_count }}</div>
             <div class="text">关注</div>
           </div>
         </van-grid-item>
         <van-grid-item text="文字" class="data-info-item">
           <div slot="text">
-            <div class="span">1</div>
+            <div class="span">{{ mine_Information.fans_count }}</div>
             <div class="text">粉丝</div>
           </div>
         </van-grid-item>
         <van-grid-item text="文字" class="data-info-item">
           <div slot="text">
-            <div class="span">1</div>
+            <div class="span">{{ mine_Information.like_count }}</div>
             <div class="text">获赞</div>
           </div>
         </van-grid-item>
       </van-grid>
     </van-cell-group>
+
     <div v-else class="s">
       <div class="s-box" @click="$router.push('/Login')">
         <div class="s-box_tup">
@@ -54,6 +55,7 @@
         <p>登录\注册</p>
       </div>
     </div>
+
     <van-grid class="Collect_History" :column-num="2">
       <van-grid-item
         icon="star-o"
@@ -69,14 +71,42 @@
 
 <script>
 import { mapState } from "vuex";
+
+import { User_Information } from "@/network/user";
+
 export default {
+  data() {
+    return {
+      mine_Information: {}, //登录的信息
+    };
+  },
   computed: {
     ...mapState(["user"]),
   },
+  created() {
+    this.loadUser_Information();
+  },
+
   methods: {
+    async loadUser_Information() {
+      const data = await User_Information();
+      this.mine_Information = data.data;
+    },
     Quit() {
-      window.localStorage.removeItem("user");
-      this.$router.push("/mine");
+      this.$dialog
+        .confirm({
+          title: "退出提示",
+          message: "确定退出登录吗！",
+        })
+        .then(() => {
+          // on confirm
+          this.$store.commit("setUser", null);
+        })
+        .catch(() => {
+          // on cancel
+        });
+
+      // window.localStorage.removeItem("user");
     },
   },
 };
@@ -156,6 +186,7 @@ export default {
       }
       .text {
         font-size: 11px;
+        text-align: center;
       }
     }
   }
