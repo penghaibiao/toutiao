@@ -13,7 +13,7 @@ export function Login(aa) {
 export function Login_Code(mobile) {
     return request({
         method: "get",
-        url: `/app/v1_0/captchas/${mobile}`,
+        url: `/app/v1_0/sms/codes/${mobile}`,
     })
 
 
