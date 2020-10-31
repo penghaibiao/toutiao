@@ -40,13 +40,32 @@
         ref="Article_Data.content"
         v-html="Article_Data.content"
       ></div>
+      <!-- 文章评论列表 -->
+      <Commentary_list
+        :article_id="article_id"
+        :list="commentlist"
+        @updata-total-count="totalcommenttatcount = $event"
+        @commentuser="onReplyclick"
+      ></Commentary_list>
+      <!-- 文章评论列表 -->
     </div>
+
     <!-- 底部结构 -->
     <div class="Article_Bottom">
-      <van-button class="Commentary" type="default" round size="small"
+      <van-button
+        class="Commentary"
+        type="default"
+        round
+        size="small"
+        @click="showPopup"
         >写评论</van-button
       >
-      <van-icon name="comment-o" info="123" size="20px" color="#777"></van-icon>
+      <van-icon
+        name="comment-o"
+        :info="totalcommenttatcount"
+        size="20px"
+        color="#777"
+      ></van-icon>
       <van-icon
         :name="Article_Data.is_collected ? 'star' : 'star-o'"
         :color="Article_Data.is_collected ? '#FF6347' : '#777'"
@@ -61,6 +80,29 @@
       ></van-icon>
       <van-icon name="share" color="#777777" size="20px"></van-icon>
     </div>
+
+    <!-- 弹出层 -->
+    <van-popup v-model="show" round position="bottom">
+      <ReleaseCommentary
+        :target="article_id"
+        @Hiding="Hiding"
+      ></ReleaseCommentary>
+    </van-popup>
+
+    <!-- 评论回复 -->
+    <van-popup
+      v-model="Comments_show"
+      :style="{ height: '80%' }"
+      position="bottom"
+      round
+    >
+      <comment_Reply
+        v-if="Comments_show"
+        :comments="Comment_message"
+        :articleId="article_id"
+        @close="Comments_show = false"
+      ></comment_Reply>
+    </van-popup>
   </div>
 </template>
 
@@ -75,16 +117,31 @@ import {
   deleteLike,
 } from "@/network/Articles.js";
 import { ImagePreview } from "vant";
+
+import Commentary_list from "@/views/layout/zi_layout/Articles/Commentary_list.vue";
+import ReleaseCommentary from "@/views/layout/zi_layout/Articles/ReleaseCommentary.vue";
+import comment_Reply from "@/views/layout/zi_layout/Articles/comment_Reply.vue";
 export default {
+  name: "article1",
   data() {
     return {
       article_id: this.$route.params.articleId,
       Article_Data: {}, //文章数据对象
       infollowloading: false,
+      show: false,
+      commentlist: [],
+      totalcommenttatcount: 0, //评论总数量
+      Comments_show: false,
+      Comment_message: null,
     };
   },
   created() {
     this.Article_details();
+  },
+  components: {
+    Commentary_list,
+    ReleaseCommentary,
+    comment_Reply,
   },
   methods: {
     async Article_details() {
@@ -171,17 +228,26 @@ export default {
         this.$toast.fail("操作失败");
       }
     },
+    showPopup() {
+      this.show = true;
+    },
+    Hiding(res) {
+      this.show = false;
+      this.commentlist.unshift(res);
+      this.totalcommenttatcount++;
+      console.log(res);
+    },
+    onReplyclick(comments) {
+      // 展示回复内容
+
+      this.Comment_message = comments;
+      this.Comments_show = true;
+    },
   },
 };
 </script>
 
 <style scoped lang="less">
-.Article_Bottom {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-}
 .app-nav-bar {
   position: fixed;
   top: 0;
@@ -202,8 +268,13 @@ export default {
   }
 }
 .Articles_content {
+  position: relative;
+  top: 0;
+  left: 0;
+  right: 0;
+  overflow-y: auto;
   margin-top: 37px;
-  margin-bottom: 37px;
+  margin-bottom: 45px;
 }
 .user-info {
   //   box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
@@ -227,6 +298,10 @@ export default {
 }
 .Article_Bottom {
   display: flex;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
   background-color: #fff;
   justify-content: center;
   align-items: center;

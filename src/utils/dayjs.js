@@ -13,4 +13,8 @@ dayjs.extend(relativeTime)
 Vue.filter("relativeTime", value => {
     return dayjs(value).to(dayjs())
 })
+
+Vue.filter("daytime", value => {
+    return dayjs(value).format('YYYY-MM-DD HH:mm')
+})
 dayjs.locale('zh-cn')

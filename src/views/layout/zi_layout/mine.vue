@@ -17,7 +17,9 @@
           :src="mine_Information.photo"
         />
         <div class="Nicknames" slot="title">{{ mine_Information.name }}</div>
-        <van-button round class="Information">编辑资料</van-button>
+        <van-button round class="Information" to="user/profile"
+          >编辑资料</van-button
+        >
       </van-cell>
       <van-grid class="mine-grid mb-4" :border="false" :center="true">
         <van-grid-item text="文字" class="data-info-item">

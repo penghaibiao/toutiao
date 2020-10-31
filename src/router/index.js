@@ -47,6 +47,11 @@ const routes = [
     path: '/article/:articleId',
     name: '/article',
     component: () => import("@/views/layout/zi_layout/Articles/article.vue")
+  },
+  {
+    path: '/user/profile',
+    name: '/profile',
+    component: () => import("@/views/user-Information")
   }
 
 ]

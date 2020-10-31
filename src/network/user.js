@@ -83,3 +83,15 @@ export function daeletuserChannel(channelId) {
 
 
 }
+
+//删除用户频道
+export function Modifies_Information() {
+    return request({
+        method: "get",
+        url: `/app/v1_0/user/profile`,
+
+
+    })
+
+
+}
