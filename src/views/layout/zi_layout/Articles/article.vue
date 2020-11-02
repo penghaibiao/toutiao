@@ -170,7 +170,6 @@ export default {
         //已关注，取消关注
         const res = await deleteFollow(this.Article_Data.aut_id);
         this.Article_Data.is_followed = false;
-        console.log(res);
       } else {
         //未关注，关注
         const res = await addFollow(this.Article_Data.aut_id);

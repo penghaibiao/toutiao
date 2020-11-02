@@ -52,7 +52,7 @@
     <div v-else class="s">
       <div class="s-box" @click="$router.push('/Login')">
         <div class="s-box_tup">
-          <img src="@/assets/2.png" alt="" />
+          <img src="@/assets/1.jpg" alt="" />
         </div>
         <p>登录\注册</p>
       </div>
@@ -125,7 +125,9 @@ export default {
     margin: 30px auto;
     p {
       color: #fff;
-      font-size: 15px;
+      font-size: 13px;
+      text-align: center;
+      margin-top: 0;
     }
   }
   .s-box_tup {

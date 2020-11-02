@@ -83,9 +83,8 @@ export function daeletuserChannel(channelId) {
 
 
 }
-
-//删除用户频道
-export function Modifies_Information() {
+// 获取用户基本信息
+export function Modifies_Information(channelId) {
     return request({
         method: "get",
         url: `/app/v1_0/user/profile`,
@@ -95,3 +94,28 @@ export function Modifies_Information() {
 
 
 }
+
+// 获取用户个人资料
+export function Modifies_My_profile(data) {
+    return request({
+        method: "PATCH",
+        url: `/app/v1_0/user/profile`,
+        data
+
+    })
+
+
+}
+
+// 修改用户头像
+export function Modifies_user_image(data) {
+    return request({
+        method: "PATCH",
+        url: `/app/v1_0/user/photo`,
+        data
+
+    })
+
+
+}
+

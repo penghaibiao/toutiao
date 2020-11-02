@@ -47,6 +47,7 @@ import { Channel_List } from "@/network/user.js";
 import Articles_list from "@/views/layout/zi_layout/zihome/Articles_list.vue";
 import Channel_editor from "@/views/layout/zi_layout/zihome/Channel_editor.vue";
 export default {
+  name: "Home",
   data() {
     return {
       active: 0,
